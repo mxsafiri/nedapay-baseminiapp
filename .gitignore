@@ -89,4 +89,13 @@ pids
 # Temporary folders
 tmp/
 temp/
+
+# Temporarily exclude large PNG files (>1MB) to avoid GitHub push limits
+# TODO: Use Git LFS or optimize these images
+public/20250609_1054_NEDApay Logo Design_remix_01jx9tvkate05rf9jp0gw0b5pg.png
+public/global_stablecoins.png
+public/bg-waves.png
+public/secure_payments.png
+public/zero_fees.png
+public/fast-settlements.png
 node_modules
