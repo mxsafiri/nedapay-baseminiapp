@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* NEDApay Custom Fonts */
+@font-face {
+  font-family: 'Coinbase Display';
+  src: url('/Coinbase Display-normal-400-100.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Coinbase Sans';
+  src: url('/coinbaseSans-normal-400-100.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Hide scrollbar for horizontal scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Modern Radix UI inspired design tokens */
+.card-modern {
+  @apply bg-white/80 backdrop-blur-sm border border-gray-200/60 shadow-sm;
+}
+
+.card-modern-dark {
+  @apply bg-gray-900/80 backdrop-blur-sm border border-gray-800/60 shadow-sm;
+}
+
+.button-modern {
+  @apply px-4 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.button-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white;
+}
+
+.button-secondary {
+  @apply bg-gray-100 hover:bg-gray-200 text-gray-900 border border-gray-200;
+}
+
+.button-secondary-dark {
+  @apply bg-gray-800 hover:bg-gray-700 text-gray-100 border border-gray-700;
+}
+
+.metric-card {
+  @apply p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200/40;
+}
+
+.metric-card-dark {
+  @apply p-4 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900/50 border border-gray-700/40;
+}
+
+.glass-effect {
+  @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg;
+}
+
+.glass-effect-dark {
+  @apply bg-gray-900/70 backdrop-blur-md border border-gray-800/20 shadow-lg;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
