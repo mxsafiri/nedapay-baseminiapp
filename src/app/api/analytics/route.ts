@@ -1,5 +1,6 @@
 // Analytics API endpoint - aggregates real data from transactions and invoices
 import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 
 interface AnalyticsMetrics {
   period: string;
@@ -47,54 +48,67 @@ export async function GET(request: NextRequest) {
         startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     }
 
-    // Fetch transactions data
-    const transactionsResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/mock/transactions?userId=${userId}`,
-      { method: 'GET' }
-    );
-    const transactionsData = await transactionsResponse.json();
-    const transactions = transactionsData.transactions || [];
+    // Fetch transactions data from Supabase
+    const { data: transactions, error: transactionsError } = await supabase
+      .from('transactions')
+      .select('*')
+      .eq('merchant_id', userId || '')
+      .gte('created_at', startDate.toISOString())
+      .order('created_at', { ascending: false });
 
-    // Fetch invoices data
-    const invoicesResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/mock/invoices/sync?userId=${userId}`,
-      { method: 'GET' }
-    );
-    const invoicesData = await invoicesResponse.json();
-    const invoices = invoicesData.invoices || [];
+    if (transactionsError) {
+      console.error('Error fetching transactions:', transactionsError);
+    }
 
-    // Filter data by date range
-    const filteredTransactions = transactions.filter((tx: any) => 
-      new Date(tx.createdAt) >= startDate
-    );
-    const filteredInvoices = invoices.filter((inv: any) => 
-      new Date(inv.createdAt) >= startDate
-    );
+    // Fetch offers data from Supabase (replacing invoices for now)
+    const { data: offers, error: offersError } = await supabase
+      .from('offers')
+      .select('*')
+      .eq('merchant_id', userId || '')
+      .gte('created_at', startDate.toISOString())
+      .order('created_at', { ascending: false });
 
-    // Calculate metrics
+    if (offersError) {
+      console.error('Error fetching offers:', offersError);
+    }
+
+    // Data is already filtered by date in the query
+    const filteredTransactions = transactions || [];
+    const filteredOffers = offers || [];
+
+    // Calculate metrics from real data
     const revenue = filteredTransactions.reduce((sum: number, tx: any) => 
-      sum + parseFloat(tx.amount), 0
-    ) + filteredInvoices.reduce((sum: number, inv: any) => 
-      sum + inv.total, 0
+      sum + parseFloat(tx.amount || 0), 0
     );
 
     const customers = new Set([
-      ...filteredTransactions.map((tx: any) => tx.fromAddress),
-      ...filteredInvoices.map((inv: any) => inv.customerEmail)
+      ...filteredTransactions.map((tx: any) => tx.customer_wallet),
+      ...filteredTransactions.filter((tx: any) => tx.customer_wallet).map((tx: any) => tx.customer_wallet)
     ]).size;
 
-    // Mock redemptions and engagement for now (would come from loyalty system)
-    const redemptions = Math.floor(revenue / 15); // Rough estimate
-    const engagement = Math.min(95, Math.floor((customers / Math.max(1, filteredTransactions.length)) * 100));
+    // Calculate redemptions from offers
+    const redemptions = filteredOffers.reduce((sum: number, offer: any) => 
+      sum + (offer.redemptions || 0), 0
+    );
+
+    // Calculate engagement based on real data
+    const totalOffers = filteredOffers.length;
+    const activeOffers = filteredOffers.filter((offer: any) => offer.is_active).length;
+    const engagement = totalOffers > 0 ? Math.round((activeOffers / totalOffers) * 100) : 0;
 
     // Calculate trend (compare with previous period)
-    const previousPeriodStart = new Date(startDate.getTime() - (now.getTime() - startDate.getTime()));
-    const previousTransactions = transactions.filter((tx: any) => {
-      const txDate = new Date(tx.createdAt);
-      return txDate >= previousPeriodStart && txDate < startDate;
-    });
-    const previousRevenue = previousTransactions.reduce((sum: number, tx: any) => 
-      sum + parseFloat(tx.amount), 0
+    const periodLength = now.getTime() - startDate.getTime();
+    const previousPeriodStart = new Date(startDate.getTime() - periodLength);
+    
+    const { data: previousTransactions } = await supabase
+      .from('transactions')
+      .select('*')
+      .eq('merchant_id', userId || '')
+      .gte('created_at', previousPeriodStart.toISOString())
+      .lt('created_at', startDate.toISOString());
+    
+    const previousRevenue = (previousTransactions || []).reduce((sum: number, tx: any) => 
+      sum + parseFloat(tx.amount || 0), 0
     );
     
     let trend: 'up' | 'down' | 'stable' = 'stable';
@@ -102,15 +116,26 @@ export async function GET(request: NextRequest) {
     else if (revenue < previousRevenue * 0.95) trend = 'down';
 
     // Generate chart data based on period
-    const chartData = generateChartData(filteredTransactions, filteredInvoices, period, startDate, now);
+    const chartData = generateChartData(filteredTransactions, filteredOffers, period, startDate, now);
 
-    // Generate top performing rewards (mock data for now - would come from loyalty system)
-    const topRewards = [
-      { name: '10% Off Purchase', redemptions: Math.floor(redemptions * 0.4), revenue: Math.floor(revenue * 0.25) },
-      { name: 'Free Coffee', redemptions: Math.floor(redemptions * 0.3), revenue: Math.floor(revenue * 0.15) },
-      { name: 'Buy 2 Get 1 Free', redemptions: Math.floor(redemptions * 0.2), revenue: Math.floor(revenue * 0.20) },
-      { name: 'VIP Access', redemptions: Math.floor(redemptions * 0.1), revenue: Math.floor(revenue * 0.30) }
-    ];
+    // Generate top performing rewards from real offers data
+    const topRewards = filteredOffers
+      .sort((a: any, b: any) => (b.redemptions || 0) - (a.redemptions || 0))
+      .slice(0, 4)
+      .map((offer: any) => ({
+        name: offer.title || 'Untitled Offer',
+        redemptions: offer.redemptions || 0,
+        revenue: Math.floor((offer.redemptions || 0) * (revenue / Math.max(1, redemptions)) * (offer.discount_percentage / 100))
+      }));
+    
+    // Fill with default offers if we don't have enough real data
+    while (topRewards.length < 4) {
+      topRewards.push({
+        name: `Offer ${topRewards.length + 1}`,
+        redemptions: 0,
+        revenue: 0
+      });
+    }
 
     const analytics: AnalyticsMetrics = {
       period: getPeriodLabel(period),

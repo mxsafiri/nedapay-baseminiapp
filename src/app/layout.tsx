@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { OffersProvider } from '@/contexts/OffersContext';
 import { MiniKitContextProvider } from '@/components/providers/MiniKitProvider';
+import { PrivyProvider } from '@/components/providers/PrivyProvider';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
@@ -26,13 +27,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider>
-          <OffersProvider>
-            <MiniKitContextProvider>
-              {children}
-            </MiniKitContextProvider>
-          </OffersProvider>
-        </ThemeProvider>
+        <PrivyProvider>
+          <ThemeProvider>
+            <OffersProvider>
+              <MiniKitContextProvider>
+                {children}
+              </MiniKitContextProvider>
+            </OffersProvider>
+          </ThemeProvider>
+        </PrivyProvider>
       </body>
     </html>
   );

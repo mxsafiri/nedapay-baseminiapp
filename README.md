@@ -42,7 +42,7 @@ Visit `http://localhost:3000` to see the application.
 
 ## 🎯 Project Overview
 
-NedaPay Base MiniKit is a merchant-focused payment and loyalty platform that combines:
+NedaPay Base MiniKit is a merchant-focused payment and customer loyalty retention platform that combines payment processing with loyalty(offers) program features for merchants helping them to grow their business:
 
 - **Payment Processing**: USDC and multi-stablecoin support on Base network
 - **Loyalty Programs**: Customer rewards, NFT milestones, and engagement tracking

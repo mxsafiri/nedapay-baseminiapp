@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useAccount } from 'wagmi';
-import WalletConnection from '@/components/WalletConnection';
+import { useAuth } from '@/hooks/useAuth';
+import { AuthComponent } from '@/components/AuthComponent';
 import { StablecoinBalance } from '@/components/StablecoinBalance';
 import { PaymentProcessor } from '@/components/PaymentProcessor';
 import { InvoiceGenerator } from '@/components/InvoiceGenerator';
@@ -30,7 +30,7 @@ import {
 type FeatureType = 'm-pulse' | 'promo-offers' | 'send' | 'invoice' | 'offramp' | 'analytics';
 
 export default function Home() {
-  const { isConnected } = useAccount();
+  const { user, isAuthenticated, isLoading, login } = useAuth();
   const { theme, toggleTheme, isDark } = useTheme();
   const [activeFeature, setActiveFeature] = useState<FeatureType>('m-pulse');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -98,24 +98,19 @@ export default function Home() {
   };
 
   return (
-    <main className={`min-h-screen transition-colors duration-300 ${
+    <main className={`min-h-screen ${
       isDark 
-        ? 'bg-gradient-to-br from-gray-950 to-gray-900 text-white' 
-        : 'bg-gradient-to-br from-gray-50 to-white text-gray-900'
+        ? 'bg-gray-950 text-white' 
+        : 'bg-white text-gray-900'
     }`}>
-      {/* Header */}
-      <div className={`backdrop-blur-md border-b transition-colors duration-300 ${
-        isDark 
-          ? 'bg-gray-900/60 border-gray-800/40 shadow-sm' 
-          : 'bg-white/70 border-gray-200/50 shadow-sm'
-      }`}>
+        {/* Header */}
         <div className="max-w-md mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
-                src="/NEDApay Logo Symbol (1)-new.svg" 
+                src="/NEDApayLogo.png" 
                 alt="NEDApay Logo" 
-                className="w-8 h-8"
+                className="w-8 h-8" 
               />
               <div>
                 <h1 className={`text-xl font-bold font-display ${
@@ -127,6 +122,32 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              {/* Wallet Connect Button */}
+              <button
+                onClick={() => {
+                  if (isAuthenticated) {
+                    // Show wallet info or disconnect option
+                  } else {
+                    login();
+                  }
+                }}
+                className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-200 ${
+                  isAuthenticated
+                    ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300'
+                    : 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800'
+                }`}
+              >
+                <Wallet className="w-3 h-3" />
+                <span>
+                  {isAuthenticated 
+                    ? user?.walletAddress 
+                      ? `${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`
+                      : 'Connected'
+                    : 'Connect'
+                  }
+                </span>
+              </button>
+              
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
@@ -147,36 +168,20 @@ export default function Home() {
                   isDark ? 'text-gray-400' : 'text-gray-600'
                 }`}>Base</span>
               </div>
-            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-md mx-auto px-4 py-6">
-        {!isConnected ? (
-          <div className="space-y-6">
-            {/* Hero Section */}
-            <div className="text-center py-12">
-              <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                Pay with Crypto
-              </h2>
-              <p className={`mb-8 ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>
-                Send, receive, and manage payments instantly on Base and other supported chains.
-              </p>
-            </div>
-            
-            {/* Wallet Connection */}
-            <WalletConnection />
+        {isLoading ? (
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           </div>
         ) : (
           <div className="space-y-6">
             {/* Feature Toggle - Scrollable */}
-            <div className={`rounded-2xl p-1 transition-colors duration-300 backdrop-blur-sm ${
-              isDark ? 'bg-gray-900/60 border border-gray-800/40 shadow-lg' : 'bg-white/80 shadow-lg border border-gray-200/50'
-            }`}>
+            <div className="p-1">
               <div 
                 ref={scrollContainerRef}
                 className="flex space-x-1 overflow-x-auto scrollbar-hide"

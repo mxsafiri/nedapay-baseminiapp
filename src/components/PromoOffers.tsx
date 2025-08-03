@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   Plus, 
   Search,
@@ -23,9 +24,11 @@ import toast from 'react-hot-toast';
 import { useOffers, Offer } from '@/contexts/OffersContext';
 import PromoSetupWizard from './PromoSetupWizard';
 import SharePreviewModal from './SharePreviewModal';
+import { AuthPrompt } from './AuthPrompt';
 
 export default function PromoOffers() {
   const { isDark } = useTheme();
+  const { isAuthenticated } = useAuth();
   const { offers, deleteOffer, updateOffer } = useOffers();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
@@ -33,12 +36,29 @@ export default function PromoOffers() {
   const [showEditWizard, setShowEditWizard] = useState(false);
   const [sharingOffer, setSharingOffer] = useState<Offer | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const [pendingAction, setPendingAction] = useState<'create' | 'edit' | null>(null);
 
   const handleCreatePromo = () => {
+    if (!isAuthenticated) {
+      setPendingAction('create');
+      setShowAuthPrompt(true);
+      return;
+    }
     toast.success('Opening promo creation wizard...');
   };
 
   const handleEditPromo = (id: string) => {
+    if (!isAuthenticated) {
+      const offerToEdit = offers.find(offer => offer.id === id);
+      if (offerToEdit) {
+        setEditingOffer(offerToEdit);
+        setPendingAction('edit');
+        setShowAuthPrompt(true);
+      }
+      return;
+    }
+    
     const offerToEdit = offers.find(offer => offer.id === id);
     if (offerToEdit) {
       setEditingOffer(offerToEdit);
@@ -73,6 +93,26 @@ export default function PromoOffers() {
   const handleCloseShareModal = () => {
     setShowShareModal(false);
     setSharingOffer(null);
+  };
+
+  const handleAuthSuccess = () => {
+    setShowAuthPrompt(false);
+    
+    if (pendingAction === 'create') {
+      toast.success('Opening promo creation wizard...');
+    } else if (pendingAction === 'edit' && editingOffer) {
+      setShowEditWizard(true);
+      toast.success('Opening edit wizard...');
+    }
+    
+    setPendingAction(null);
+    setEditingOffer(null);
+  };
+
+  const handleAuthCancel = () => {
+    setShowAuthPrompt(false);
+    setPendingAction(null);
+    setEditingOffer(null);
   };
 
   const getStatusColor = (status: string) => {
@@ -362,6 +402,19 @@ export default function PromoOffers() {
           offer={sharingOffer}
           merchantName="Your Business"
           onClose={handleCloseShareModal}
+        />
+      )}
+
+      {/* Auth Prompt */}
+      {showAuthPrompt && (
+        <AuthPrompt
+          action={pendingAction === 'create' ? 'Create Promo Offer' : 'Edit Promo Offer'}
+          description={pendingAction === 'create' 
+            ? 'Connect your wallet to create and manage promotional offers for your business.'
+            : 'Connect your wallet to edit this promotional offer.'
+          }
+          onCancel={handleAuthCancel}
+          onSuccess={handleAuthSuccess}
         />
       )}
     </div>

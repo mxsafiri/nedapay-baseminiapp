@@ -90,9 +90,7 @@ export default function MPulseDashboard() {
   return (
     <div className="p-6 space-y-6">
       {/* Portfolio Balance Section */}
-      <div className={`rounded-3xl p-6 transition-all duration-300 backdrop-blur-sm ${
-        isDark ? 'bg-gray-900/60 border border-gray-800/40 shadow-lg' : 'bg-white/80 shadow-lg border border-gray-200/50'
-      }`}>
+      <div className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className={`text-sm font-sans ${
@@ -144,10 +142,10 @@ export default function MPulseDashboard() {
         <div className="grid grid-cols-3 gap-3 mt-6">
           <button
             onClick={handleCreateOffer}
-            className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 backdrop-blur-sm shadow-md hover:shadow-lg ${
+            className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 ${
               isDark
-                ? 'bg-blue-600/90 hover:bg-blue-700/90 text-white border border-blue-500/30'
-                : 'bg-blue-500/90 hover:bg-blue-600/90 text-white border border-blue-400/30'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                : 'bg-blue-500 hover:bg-blue-600 text-white'
             }`}
           >
             <Plus className="w-5 h-5 mb-2" />
@@ -156,10 +154,10 @@ export default function MPulseDashboard() {
 
           <button
             onClick={handleGenerateQR}
-            className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 backdrop-blur-sm shadow-md hover:shadow-lg ${
+            className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 ${
               isDark
-                ? 'bg-gray-700/90 hover:bg-gray-800/90 text-white border border-gray-600/30'
-                : 'bg-gray-600/90 hover:bg-gray-700/90 text-white border border-gray-500/30'
+                ? 'bg-gray-700 hover:bg-gray-800 text-white'
+                : 'bg-gray-600 hover:bg-gray-700 text-white'
             }`}
           >
             <QrCode className="w-5 h-5 mb-2" />
@@ -168,10 +166,10 @@ export default function MPulseDashboard() {
 
           <button
             onClick={handleOfframp}
-            className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 backdrop-blur-sm shadow-md hover:shadow-lg ${
+            className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 ${
               isDark
-                ? 'bg-green-600/90 hover:bg-green-700/90 text-white border border-green-500/30'
-                : 'bg-green-500/90 hover:bg-green-600/90 text-white border border-green-400/30'
+                ? 'bg-green-600 hover:bg-green-700 text-white'
+                : 'bg-green-500 hover:bg-green-600 text-white'
             }`}
           >
             <ArrowDownToLine className="w-5 h-5 mb-2" />
@@ -181,9 +179,7 @@ export default function MPulseDashboard() {
       </div>
 
       {/* Business Growth CTA */}
-      <div className={`rounded-3xl p-6 transition-all duration-300 backdrop-blur-sm ${
-        isDark ? 'bg-gradient-to-r from-purple-900/60 to-blue-900/60 border border-purple-800/40 shadow-lg' : 'bg-gradient-to-r from-purple-50/80 to-blue-50/80 shadow-lg border border-purple-200/50'
-      }`}>
+      <div className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
@@ -211,9 +207,7 @@ export default function MPulseDashboard() {
       </div>
 
       {/* Active Offers */}
-      <div className={`rounded-3xl p-6 transition-all duration-300 backdrop-blur-sm ${
-        isDark ? 'bg-gray-900/60 border border-gray-800/40 shadow-lg' : 'bg-white/80 shadow-lg border border-gray-200/50'
-      }`}>
+      <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -242,9 +236,7 @@ export default function MPulseDashboard() {
         {/* Offer Cards */}
         <div className="space-y-4">
           {getActiveOffers().length === 0 ? (
-            <div className={`rounded-2xl p-8 text-center transition-all duration-300 backdrop-blur-sm ${
-              isDark ? 'bg-gray-800/40 border border-gray-700/40' : 'bg-gray-50/50 border border-gray-200/50'
-            }`}>
+            <div className="rounded-2xl p-8 text-center">
               <Gift className={`w-12 h-12 mx-auto mb-4 ${
                 isDark ? 'text-gray-500' : 'text-gray-400'
               }`} />
@@ -287,14 +279,14 @@ export default function MPulseDashboard() {
                       
                       <button
                         onClick={() => handleShare(offer)}
-                        className="flex items-center space-x-2 mt-3 px-3 py-1.5 bg-white/20 rounded-lg backdrop-blur-sm hover:bg-white/30 transition-colors duration-200"
+                        className="flex items-center space-x-2 mt-3 px-3 py-1.5 bg-white/20 rounded-lg hover:bg-white/30 transition-colors duration-200"
                       >
                         <Share2 className="w-3 h-3" />
                         <span className="text-sm font-medium">Share</span>
                       </button>
                     </div>
                     
-                    <div className="w-16 h-16 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center">
                       <Percent className="w-8 h-8 text-white/80" />
                     </div>
                   </div>
