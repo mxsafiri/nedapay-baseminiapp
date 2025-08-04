@@ -151,8 +151,10 @@ export function SendPage() {
         if (status) {
           setOrderStatus(status);
           
-          if (status.data.status === 'completed' || status.data.status === 'failed') {
-            return;
+          // Since PaycrestOrderResponse doesn't have status field in data,
+          // we'll check the main status field or implement a different polling strategy
+          if (status.status === 'success' || status.status === 'error') {
+            return; // Stop polling
           }
         }
         

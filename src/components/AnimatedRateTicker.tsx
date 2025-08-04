@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { usePaycrestRates } from '@/hooks/usePaycrest';
 
 interface RateItem {
   currency: string;

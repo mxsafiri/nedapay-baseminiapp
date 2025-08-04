@@ -36,7 +36,7 @@ export interface UsePaycrestRateReturn {
 
 export interface UsePaycrestOrderReturn {
   createOrder: (orderData: Omit<PaycrestOrderRequest, 'reference'>) => Promise<PaycrestOrderResponse | null>;
-  getOrderStatus: (orderId: string) => Promise<PaycrestOrderStatus | null>;
+  getOrderStatus: (orderId: string) => Promise<PaycrestOrderResponse | null>;
   isCreatingOrder: boolean;
   isCheckingStatus: boolean;
   orderError: string | null;
@@ -152,7 +152,7 @@ export function usePaycrestOrder(): UsePaycrestOrderReturn {
         throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
       }
 
-      const response = await paycrest.createPaymentOrder(fullOrderData);
+      const response = await paycrest.createOrder(fullOrderData);
       return response;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create payment order';
@@ -164,7 +164,7 @@ export function usePaycrestOrder(): UsePaycrestOrderReturn {
     }
   }, []);
 
-  const getOrderStatus = useCallback(async (orderId: string): Promise<PaycrestOrderStatus | null> => {
+  const getOrderStatus = useCallback(async (orderId: string): Promise<PaycrestOrderResponse | null> => {
     setIsCheckingStatus(true);
     setOrderError(null);
 
