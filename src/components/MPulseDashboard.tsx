@@ -26,6 +26,8 @@ import PromoSetupWizard from './PromoSetupWizard';
 import SharePreviewModal from './SharePreviewModal';
 import QRPreviewModal from './QRPreviewModal';
 import { useOffers } from '@/contexts/OffersContext';
+import { RateDisplay, CompactRateDisplay } from '@/components/RateDisplay';
+import { OfframpWizard } from './OfframpWizard';
 
 export default function MPulseDashboard() {
   const { isDark } = useTheme();
@@ -38,6 +40,7 @@ export default function MPulseDashboard() {
   const [sharingOffer, setSharingOffer] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showQRPreview, setShowQRPreview] = useState(false);
+  const [showOfframpWizard, setShowOfframpWizard] = useState(false);
 
   // Get the selected stablecoin configuration
   const selectedCoin = stablecoins.find(coin => coin.baseToken === selectedStablecoin) || stablecoins[0];
@@ -114,9 +117,21 @@ export default function MPulseDashboard() {
             <div className="flex items-center space-x-2 mt-2">
               <span className={`text-sm font-medium ${
                 isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>
-                {isConnected ? `≈ ${formatCurrency(balanceValue)} USD` : 'Connect wallet to view balance'}
-              </span>
+              }`}>Connect wallet to view balance</span>
+            </div>
+            
+            {/* Real-time Rate Display */}
+            <div className="mt-3">
+              <CompactRateDisplay 
+                token="USDC" 
+                currency="NGN" 
+                className="justify-start"
+              />
+            </div>
+            <div className="flex items-center space-x-2 mt-2">
+              <span className={`text-sm font-medium ${
+                isDark ? 'text-gray-400' : 'text-gray-600'
+              }`}>{isConnected ? `≈ ${formatCurrency(balanceValue)} USD` : 'Connect wallet to view balance'}</span>
             </div>
           </div>
           
@@ -165,7 +180,7 @@ export default function MPulseDashboard() {
           </button>
 
           <button
-            onClick={handleOfframp}
+            onClick={() => setShowOfframpWizard(true)}
             className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 ${
               isDark
                 ? 'bg-green-600 hover:bg-green-700 text-white'
@@ -321,6 +336,14 @@ export default function MPulseDashboard() {
           isOpen={showQRPreview}
           merchantName="Coffee Corner"
           onClose={() => setShowQRPreview(false)}
+        />
+      )}
+      
+      {/* Offramp Wizard Modal */}
+      {showOfframpWizard && (
+        <OfframpWizard
+          isOpen={showOfframpWizard}
+          onClose={() => setShowOfframpWizard(false)}
         />
       )}
     </div>

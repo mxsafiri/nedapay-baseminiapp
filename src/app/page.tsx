@@ -6,7 +6,8 @@ import { AuthComponent } from '@/components/AuthComponent';
 import { StablecoinBalance } from '@/components/StablecoinBalance';
 import { PaymentProcessor } from '@/components/PaymentProcessor';
 import { InvoiceGenerator } from '@/components/InvoiceGenerator';
-import { FiatOfframp } from '@/components/FiatOfframp';
+import { PaycrestPaymentFlow } from '@/components/PaycrestPaymentFlow';
+import { SendPage } from '@/components/SendPage';
 import MPulseDashboard from '@/components/MPulseDashboard';
 import PromoOffers from '@/components/PromoOffers';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
@@ -30,7 +31,7 @@ import {
 type FeatureType = 'm-pulse' | 'promo-offers' | 'send' | 'invoice' | 'offramp' | 'analytics';
 
 export default function Home() {
-  const { user, isAuthenticated, isLoading, login } = useAuth();
+  const { user, isAuthenticated, isLoading, login, ready } = useAuth();
   const { theme, toggleTheme, isDark } = useTheme();
   const [activeFeature, setActiveFeature] = useState<FeatureType>('m-pulse');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -85,11 +86,11 @@ export default function Home() {
       case 'promo-offers':
         return <PromoOffers />;
       case 'send':
-        return <PaymentProcessor />;
+        return <SendPage />;
       case 'invoice':
         return <InvoiceGenerator />;
       case 'offramp':
-        return <FiatOfframp />;
+        return <div>Payment functionality moved to dashboard</div>;
       case 'analytics':
         return <AnalyticsDashboard />;
       default:
@@ -124,11 +125,20 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               {/* Wallet Connect Button */}
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Wallet button clicked', { isAuthenticated, ready, login });
                   if (isAuthenticated) {
-                    // Show wallet info or disconnect option
+                    console.log('User already authenticated');
+                    // Off-ramp info or disconnect option
                   } else {
-                    login();
+                    console.log('Attempting to login...');
+                    if (login && typeof login === 'function') {
+                      login();
+                    } else {
+                      console.error('Login function not available');
+                    }
                   }
                 }}
                 className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-200 ${
