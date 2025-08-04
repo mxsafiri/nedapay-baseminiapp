@@ -28,6 +28,7 @@ import QRPreviewModal from './QRPreviewModal';
 import { useOffers } from '@/contexts/OffersContext';
 import { RateDisplay, CompactRateDisplay } from '@/components/RateDisplay';
 import { OfframpWizard } from './OfframpWizard';
+import { GetPaidWizard } from './GetPaidWizard';
 
 export default function MPulseDashboard() {
   const { isDark } = useTheme();
@@ -41,6 +42,7 @@ export default function MPulseDashboard() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showQRPreview, setShowQRPreview] = useState(false);
   const [showOfframpWizard, setShowOfframpWizard] = useState(false);
+  const [showGetPaidWizard, setShowGetPaidWizard] = useState(false);
 
   // Get the selected stablecoin configuration
   const selectedCoin = stablecoins.find(coin => coin.baseToken === selectedStablecoin) || stablecoins[0];
@@ -156,15 +158,15 @@ export default function MPulseDashboard() {
         {/* Quick Actions */}
         <div className="grid grid-cols-3 gap-3 mt-6">
           <button
-            onClick={handleCreateOffer}
+            onClick={() => setShowGetPaidWizard(true)}
             className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 ${
               isDark
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                : 'bg-blue-500 hover:bg-blue-600 text-white'
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
             }`}
           >
             <Plus className="w-5 h-5 mb-2" />
-            <span className="text-sm font-medium">Create Offer</span>
+            <span className="text-sm font-medium">Get Paid</span>
           </button>
 
           <button
@@ -334,7 +336,7 @@ export default function MPulseDashboard() {
       {showQRPreview && (
         <QRPreviewModal 
           isOpen={showQRPreview}
-          merchantName="Coffee Corner"
+          merchantName="NEDApay"
           onClose={() => setShowQRPreview(false)}
         />
       )}
@@ -344,6 +346,14 @@ export default function MPulseDashboard() {
         <OfframpWizard
           isOpen={showOfframpWizard}
           onClose={() => setShowOfframpWizard(false)}
+        />
+      )}
+      
+      {/* Get Paid Wizard Modal */}
+      {showGetPaidWizard && (
+        <GetPaidWizard
+          isOpen={showGetPaidWizard}
+          onClose={() => setShowGetPaidWizard(false)}
         />
       )}
     </div>

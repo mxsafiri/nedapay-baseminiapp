@@ -7,7 +7,8 @@ import { StablecoinBalance } from '@/components/StablecoinBalance';
 import { PaymentProcessor } from '@/components/PaymentProcessor';
 import { InvoiceGenerator } from '@/components/InvoiceGenerator';
 import { PaycrestPaymentFlow } from '@/components/PaycrestPaymentFlow';
-import { SendPage } from '@/components/SendPage';
+import { SendWizard } from '@/components/SendWizard';
+import { AnimatedRateTicker } from '@/components/AnimatedRateTicker';
 import MPulseDashboard from '@/components/MPulseDashboard';
 import PromoOffers from '@/components/PromoOffers';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
@@ -28,7 +29,7 @@ import {
   Moon 
 } from 'lucide-react';
 
-type FeatureType = 'm-pulse' | 'promo-offers' | 'send' | 'invoice' | 'offramp' | 'analytics';
+type FeatureType = 'm-pulse' | 'promo-offers' | 'send' | 'invoice' | 'analytics';
 
 export default function Home() {
   const { user, isAuthenticated, isLoading, login, ready } = useAuth();
@@ -39,10 +40,9 @@ export default function Home() {
   const features = [
     { id: 'm-pulse' as FeatureType, label: 'M-Pulse', icon: TrendingUp },
     { id: 'promo-offers' as FeatureType, label: 'Promo & Offers', icon: Gift },
+    { id: 'send' as FeatureType, label: 'Send', icon: Send },
     { id: 'invoice' as FeatureType, label: 'Invoice', icon: FileText },
     { id: 'analytics' as FeatureType, label: 'Analytics', icon: BarChart3 },
-    { id: 'send' as FeatureType, label: 'Send', icon: Send },
-    { id: 'offramp' as FeatureType, label: 'Offramp', icon: ArrowDownToLine },
   ];
 
   const handleFeatureSelect = (featureId: FeatureType, buttonElement: HTMLButtonElement) => {
@@ -86,11 +86,9 @@ export default function Home() {
       case 'promo-offers':
         return <PromoOffers />;
       case 'send':
-        return <SendPage />;
+        return <SendWizard />;
       case 'invoice':
         return <InvoiceGenerator />;
-      case 'offramp':
-        return <div>Payment functionality moved to dashboard</div>;
       case 'analytics':
         return <AnalyticsDashboard />;
       default:
@@ -111,7 +109,11 @@ export default function Home() {
               <img 
                 src="/NEDApayLogo.png" 
                 alt="NEDApay Logo" 
-                className="w-8 h-8" 
+                className="w-8 h-8 object-contain" 
+                onError={(e) => {
+                  console.error('Logo failed to load');
+                  e.currentTarget.style.display = 'none';
+                }}
               />
               <div>
                 <h1 className={`text-xl font-bold font-display ${
@@ -181,6 +183,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Animated Rate Ticker */}
+      <AnimatedRateTicker />
 
       {/* Main Content */}
       <div className="max-w-md mx-auto px-4 py-6">
