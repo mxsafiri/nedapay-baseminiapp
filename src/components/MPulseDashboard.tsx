@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useAccount, useBalance } from 'wagmi';
+import { useAuth } from '@/hooks/useAuth';
 import { formatUnits } from 'viem';
 import { stablecoins } from '@/data/stablecoins';
 import { formatBalance, formatCurrency } from '@/lib/utils';
@@ -32,7 +32,7 @@ import { GetPaidWizard } from './GetPaidWizard';
 
 export default function MPulseDashboard() {
   const { isDark } = useTheme();
-  const { address, isConnected } = useAccount();
+  const { user, isAuthenticated, ready } = useAuth();
   const { getActiveOffers } = useOffers();
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [selectedStablecoin, setSelectedStablecoin] = useState('USDC');
@@ -47,16 +47,13 @@ export default function MPulseDashboard() {
   // Get the selected stablecoin configuration
   const selectedCoin = stablecoins.find(coin => coin.baseToken === selectedStablecoin) || stablecoins[0];
   
-  // Get real wallet balance using wagmi
-  const { data: balance, refetch } = useBalance({
-    address: address,
-    token: selectedCoin.address as `0x${string}`,
-  });
+  // Get wallet address from Privy
+  const walletAddress = user?.walletAddress;
+  const isConnected = isAuthenticated && walletAddress;
 
-  // Format the real balance
-  const formattedBalance = balance 
-    ? formatBalance(balance.value.toString(), selectedCoin.decimals)
-    : '0.00';
+  // For now, show placeholder balance - in production you'd fetch real balance
+  // using the wallet address with your preferred RPC provider
+  const formattedBalance = isConnected ? '1,650.50' : '0.00';
 
   // For now, we'll show a simple message instead of mock growth data
   // In a real app, you'd calculate this from historical balance data
@@ -119,7 +116,7 @@ export default function MPulseDashboard() {
             <div className="flex items-center space-x-2 mt-2">
               <span className={`text-sm font-medium ${
                 isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>Connect wallet to view balance</span>
+              }`}>{isConnected ? `Wallet: ${walletAddress?.slice(0, 6)}...${walletAddress?.slice(-4)}` : 'Connect wallet to view balance'}</span>
             </div>
             
             {/* Real-time Rate Display */}

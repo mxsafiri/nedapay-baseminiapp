@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAuth } from '@/hooks/useAuth';
 import { useMiniKit } from '@coinbase/onchainkit/minikit';
 import { Button } from './ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/Card';
@@ -12,9 +12,7 @@ import { sharedAuth, type User } from '../lib/auth';
 import { syncManager, type SyncStatus } from '../lib/syncManager';
 
 export default function WalletConnection() {
-  const { address, isConnected, isConnecting } = useAccount();
-  const { connect, connectors } = useConnect();
-  const { disconnect } = useDisconnect();
+  const { user, isAuthenticated, login, logout, ready } = useAuth();
   const miniKit = useMiniKit();
   // Note: MiniKit may not have isOpen property, using a fallback
   const isOpen = true; // Assume MiniKit is ready for now
