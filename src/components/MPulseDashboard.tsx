@@ -27,7 +27,7 @@ import PromoSetupWizard from './PromoSetupWizard';
 import SharePreviewModal from './SharePreviewModal';
 import QRPreviewModal from './QRPreviewModal';
 import { useOffers } from '@/contexts/OffersContext';
-import { RateDisplay, CompactRateDisplay } from '@/components/RateDisplay';
+import { RateDisplay } from '@/components/RateDisplay';
 import { OfframpWizard } from './OfframpWizard';
 import { GetPaidWizard } from './GetPaidWizard';
 
@@ -139,14 +139,7 @@ export default function MPulseDashboard() {
               </div>
             )}
             
-            {/* Real-time Rate Display */}
-            <div className="mt-3">
-              <CompactRateDisplay 
-                token="USDC" 
-                currency="NGN" 
-                className="justify-start"
-              />
-            </div>
+
             {/* USD value display - only show when connected and has balance */}
             {isConnected && balanceValue > 0 && (
               <div className="flex items-center space-x-2 mt-2">
