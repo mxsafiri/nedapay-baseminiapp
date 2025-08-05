@@ -18,7 +18,8 @@ import {
 } from 'lucide-react';
 
 export function PaymentDashboard() {
-  const { isConnected } = useAccount();
+  const { user, isAuthenticated } = useAuth();
+  const isConnected = isAuthenticated && user?.walletAddress;
 
   if (!isConnected) {
     return (

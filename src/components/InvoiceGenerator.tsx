@@ -45,8 +45,11 @@ interface Invoice {
 }
 
 export function InvoiceGenerator() {
-  const { address } = useAccount();
+  const { user, isAuthenticated } = useAuth();
   const { isDark } = useTheme();
+  
+  // Get wallet address from Privy
+  const address = user?.walletAddress;
   const [currentStep, setCurrentStep] = useState(1);
   const [invoice, setInvoice] = useState<Invoice>({
     id: `INV-${Date.now()}`,
