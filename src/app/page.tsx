@@ -32,7 +32,7 @@ import {
 type FeatureType = 'm-pulse' | 'promo-offers' | 'send' | 'invoice' | 'analytics';
 
 export default function Home() {
-  const { user, isAuthenticated, isLoading, login, linkWallet, ready, wallets } = useAuth();
+  const { user, isAuthenticated, isLoading, login, linkWallet, logout, ready, wallets } = useAuth();
   const { theme, toggleTheme, isDark } = useTheme();
   const [activeFeature, setActiveFeature] = useState<FeatureType>('m-pulse');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -146,7 +146,11 @@ export default function Home() {
                       }
                     } else {
                       console.log('User already has wallet connected:', wallets[0]?.address);
-                      // Could show wallet options or disconnect
+                      // User is connected - provide logout option
+                      if (confirm('You are already connected. Do you want to disconnect and use a different account?')) {
+                        console.log('User chose to disconnect');
+                        logout();
+                      }
                     }
                   } else {
                     console.log('Attempting to login...');
@@ -166,9 +170,9 @@ export default function Home() {
                 <Wallet className="w-3 h-3" />
                 <span>
                   {isAuthenticated 
-                    ? user?.walletAddress 
-                      ? `${user.walletAddress.slice(0, 4)}...${user.walletAddress.slice(-4)}`
-                      : 'Connected'
+                    ? (wallets && wallets.length > 0)
+                      ? `${wallets[0].address.slice(0, 4)}...${wallets[0].address.slice(-4)}`
+                      : 'Link Wallet'
                     : 'Connect'
                   }
                 </span>
