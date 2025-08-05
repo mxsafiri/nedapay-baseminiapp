@@ -32,7 +32,7 @@ import {
 type FeatureType = 'm-pulse' | 'promo-offers' | 'send' | 'invoice' | 'analytics';
 
 export default function Home() {
-  const { user, isAuthenticated, isLoading, login, ready } = useAuth();
+  const { user, isAuthenticated, isLoading, login, linkWallet, ready } = useAuth();
   const { theme, toggleTheme, isDark } = useTheme();
   const [activeFeature, setActiveFeature] = useState<FeatureType>('m-pulse');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -130,10 +130,21 @@ export default function Home() {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log('Wallet button clicked', { isAuthenticated, ready, login });
+                  console.log('Wallet button clicked', { isAuthenticated, ready, user });
+                  
                   if (isAuthenticated) {
-                    console.log('User already authenticated');
-                    // Off-ramp info or disconnect option
+                    if (!user?.walletAddress) {
+                      // User is authenticated but no wallet linked - use linkWallet
+                      console.log('User authenticated but no wallet - linking wallet...');
+                      if (linkWallet && typeof linkWallet === 'function') {
+                        linkWallet();
+                      } else {
+                        console.error('LinkWallet function not available');
+                      }
+                    } else {
+                      console.log('User already has wallet connected');
+                      // Could show wallet options or disconnect
+                    }
                   } else {
                     console.log('Attempting to login...');
                     if (login && typeof login === 'function') {
