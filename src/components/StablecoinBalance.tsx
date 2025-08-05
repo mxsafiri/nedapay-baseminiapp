@@ -7,10 +7,12 @@ import { formatBalance, formatCurrency } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { RefreshCw, TrendingUp, Eye, EyeOff, ChevronDown, Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useBalance } from '@/hooks/useBalance';
 
 export function StablecoinBalance() {
   const { user, isAuthenticated } = useAuth();
   const { isDark } = useTheme();
+  const { usdc, eth, isLoading, refetch } = useBalance(user?.walletAddress);
   const [selectedCoin, setSelectedCoin] = useState(stablecoins[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -20,15 +22,11 @@ export function StablecoinBalance() {
   const walletAddress = user?.walletAddress;
   const isConnected = isAuthenticated && walletAddress;
 
-  // Placeholder balance - in production you'd fetch real balance
-  const balance = isConnected ? { value: BigInt('1650500000'), decimals: 6 } : null;
-
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
-      // In production, you'd refetch the balance from your RPC provider
-      // For now, just simulate a refresh
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Use real RPC balance refetch
+      refetch();
       toast.success('Balance updated successfully');
     } catch (error) {
       toast.error('Failed to refresh balance');
@@ -37,10 +35,25 @@ export function StablecoinBalance() {
     }
   };
 
-  const formattedBalance = balance 
-    ? formatBalance(balance.value.toString(), selectedCoin.decimals)
-    : '0.00';
+  // Use real RPC-fetched balance based on selected coin
+  const getRealBalance = () => {
+    if (!isConnected) return '0.00';
+    
+    // For USDC, use the fetched USDC balance
+    if (selectedCoin.baseToken === 'USDC') {
+      return usdc || '0.00';
+    }
+    
+    // For ETH, use the fetched ETH balance  
+    if (selectedCoin.baseToken === 'ETH') {
+      return eth || '0.00';
+    }
+    
+    // For other tokens, return 0 for now
+    return '0.00';
+  };
 
+  const formattedBalance = getRealBalance();
   const balanceValue = parseFloat(formattedBalance);
 
   const copyAddress = () => {

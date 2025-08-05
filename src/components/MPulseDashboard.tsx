@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/hooks/useAuth';
+import { useBalance } from '@/hooks/useBalance';
 import { formatUnits } from 'viem';
 import { stablecoins } from '@/data/stablecoins';
 import { formatBalance, formatCurrency } from '@/lib/utils';
@@ -33,6 +34,7 @@ import { GetPaidWizard } from './GetPaidWizard';
 export default function MPulseDashboard() {
   const { isDark } = useTheme();
   const { user, isAuthenticated, ready } = useAuth();
+  const { usdc, eth, isLoading: balanceLoading, refetch } = useBalance(user?.walletAddress);
   const { getActiveOffers } = useOffers();
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [selectedStablecoin, setSelectedStablecoin] = useState('USDC');
@@ -51,9 +53,22 @@ export default function MPulseDashboard() {
   const walletAddress = user?.walletAddress;
   const isConnected = isAuthenticated && walletAddress;
 
-  // For now, show placeholder balance - in production you'd fetch real balance
-  // using the wallet address with your preferred RPC provider
-  const formattedBalance = isConnected ? '1,650.50' : '0.00';
+  // Use real RPC-fetched balance based on selected stablecoin
+  const getRealBalance = () => {
+    if (!isConnected) return '0.00';
+    
+    if (selectedStablecoin === 'USDC') {
+      return usdc || '0.00';
+    }
+    
+    if (selectedStablecoin === 'ETH') {
+      return eth || '0.00';
+    }
+    
+    return '0.00';
+  };
+  
+  const formattedBalance = getRealBalance();
 
   // For now, we'll show a simple message instead of mock growth data
   // In a real app, you'd calculate this from historical balance data
