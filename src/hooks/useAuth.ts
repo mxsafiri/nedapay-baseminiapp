@@ -152,7 +152,7 @@ export function useAuth() {
   return {
     // Auth state
     user: authUser,
-    isAuthenticated: authenticated && !!authUser,
+    isAuthenticated: authenticated, // Use Privy's authenticated state directly
     isLoading: !ready || isLoading,
     ready,
 

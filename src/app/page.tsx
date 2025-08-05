@@ -32,7 +32,7 @@ import {
 type FeatureType = 'm-pulse' | 'promo-offers' | 'send' | 'invoice' | 'analytics';
 
 export default function Home() {
-  const { user, isAuthenticated, isLoading, login, linkWallet, ready } = useAuth();
+  const { user, isAuthenticated, isLoading, login, linkWallet, ready, wallets } = useAuth();
   const { theme, toggleTheme, isDark } = useTheme();
   const [activeFeature, setActiveFeature] = useState<FeatureType>('m-pulse');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -130,10 +130,13 @@ export default function Home() {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log('Wallet button clicked', { isAuthenticated, ready, user });
+                  console.log('Wallet button clicked', { isAuthenticated, ready, user, wallets });
                   
                   if (isAuthenticated) {
-                    if (!user?.walletAddress) {
+                    // Check if user has any wallets connected via Privy
+                    const hasWallet = wallets && wallets.length > 0;
+                    
+                    if (!hasWallet) {
                       // User is authenticated but no wallet linked - use linkWallet
                       console.log('User authenticated but no wallet - linking wallet...');
                       if (linkWallet && typeof linkWallet === 'function') {
@@ -142,7 +145,7 @@ export default function Home() {
                         console.error('LinkWallet function not available');
                       }
                     } else {
-                      console.log('User already has wallet connected');
+                      console.log('User already has wallet connected:', wallets[0]?.address);
                       // Could show wallet options or disconnect
                     }
                   } else {
