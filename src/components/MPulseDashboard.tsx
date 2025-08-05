@@ -33,8 +33,11 @@ import { GetPaidWizard } from './GetPaidWizard';
 
 export default function MPulseDashboard() {
   const { isDark } = useTheme();
-  const { user, isAuthenticated, ready } = useAuth();
-  const { usdc, eth, isLoading: balanceLoading, refetch } = useBalance(user?.walletAddress);
+  const { user, isAuthenticated, ready, wallets } = useAuth();
+  
+  // Get wallet address from Privy wallets directly
+  const walletAddress = wallets?.[0]?.address;
+  const { usdc, eth, isLoading: balanceLoading, refetch } = useBalance(walletAddress);
   const { getActiveOffers } = useOffers();
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [selectedStablecoin, setSelectedStablecoin] = useState('USDC');
@@ -49,8 +52,7 @@ export default function MPulseDashboard() {
   // Get the selected stablecoin configuration
   const selectedCoin = stablecoins.find(coin => coin.baseToken === selectedStablecoin) || stablecoins[0];
   
-  // Get wallet address from Privy
-  const walletAddress = user?.walletAddress;
+  // Use the same wallet address from Privy wallets
   const isConnected = isAuthenticated && walletAddress;
 
   // Use real RPC-fetched balance based on selected stablecoin
@@ -128,11 +130,14 @@ export default function MPulseDashboard() {
                 {balanceVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
-            <div className="flex items-center space-x-2 mt-2">
-              <span className={`text-sm font-medium ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>{isConnected ? `Wallet: ${walletAddress?.slice(0, 6)}...${walletAddress?.slice(-4)}` : 'Connect wallet to view balance'}</span>
-            </div>
+            {/* Wallet address display - only show when connected */}
+            {isConnected && walletAddress && (
+              <div className="flex items-center space-x-2 mt-2">
+                <span className={`text-xs font-mono ${
+                  isDark ? 'text-gray-500' : 'text-gray-500'
+                }`}>{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</span>
+              </div>
+            )}
             
             {/* Real-time Rate Display */}
             <div className="mt-3">
@@ -142,11 +147,14 @@ export default function MPulseDashboard() {
                 className="justify-start"
               />
             </div>
-            <div className="flex items-center space-x-2 mt-2">
-              <span className={`text-sm font-medium ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>{isConnected ? `≈ ${formatCurrency(balanceValue)} USD` : 'Connect wallet to view balance'}</span>
-            </div>
+            {/* USD value display - only show when connected and has balance */}
+            {isConnected && balanceValue > 0 && (
+              <div className="flex items-center space-x-2 mt-2">
+                <span className={`text-sm font-medium ${
+                  isDark ? 'text-gray-400' : 'text-gray-600'
+                }`}>≈ ${formatCurrency(balanceValue)} USD</span>
+              </div>
+            )}
           </div>
           
           {/* Stablecoin Selector */}

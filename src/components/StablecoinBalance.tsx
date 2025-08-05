@@ -10,16 +10,18 @@ import toast from 'react-hot-toast';
 import { useBalance } from '@/hooks/useBalance';
 
 export function StablecoinBalance() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, wallets } = useAuth();
   const { isDark } = useTheme();
-  const { usdc, eth, isLoading, refetch } = useBalance(user?.walletAddress);
+  
+  // Get wallet address from Privy wallets directly
+  const walletAddress = wallets?.[0]?.address;
+  const { usdc, eth, isLoading, refetch } = useBalance(walletAddress);
   const [selectedCoin, setSelectedCoin] = useState(stablecoins[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
 
-  // Get wallet address from Privy
-  const walletAddress = user?.walletAddress;
+  // Use the same wallet address from Privy wallets
   const isConnected = isAuthenticated && walletAddress;
 
   const handleRefresh = async () => {
