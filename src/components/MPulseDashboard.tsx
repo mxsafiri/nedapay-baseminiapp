@@ -28,7 +28,7 @@ import SharePreviewModal from './SharePreviewModal';
 import QRPreviewModal from './QRPreviewModal';
 import { useOffers } from '@/contexts/OffersContext';
 import { RateDisplay } from '@/components/RateDisplay';
-import { OfframpWizard } from './OfframpWizard';
+import { EnhancedOfframpWizard } from './EnhancedOfframpWizard';
 import { GetPaidWizard } from './GetPaidWizard';
 
 export default function MPulseDashboard() {
@@ -356,7 +356,7 @@ export default function MPulseDashboard() {
       
       {/* Offramp Wizard Modal */}
       {showOfframpWizard && (
-        <OfframpWizard
+        <EnhancedOfframpWizard
           isOpen={showOfframpWizard}
           onClose={() => setShowOfframpWizard(false)}
         />
