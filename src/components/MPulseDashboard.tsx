@@ -298,7 +298,6 @@ export default function MPulseDashboard() {
           )}
         </div>
       </div>
-    </div>
 
       {/* Promo Setup Wizard Modal */}
       {showPromoWizard && (
@@ -338,6 +337,7 @@ export default function MPulseDashboard() {
           onClose={() => setShowGetPaidWizard(false)}
         />
       )}
+    </div>
     </div>
   );
 }
