@@ -107,151 +107,129 @@ export default function MPulseDashboard() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Portfolio Balance Section */}
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6 space-y-8">
+      {/* Portfolio Balance Section - Enhanced */}
+      <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 shadow-2xl">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <p className={`text-sm font-sans ${
-              isDark ? 'text-gray-400' : 'text-gray-600'
-            }`}>Portfolio</p>
-            <div className="flex items-center space-x-3 mt-1">
-              <h2 className={`text-3xl font-display font-bold ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>
+            <p className="text-white/70 text-sm font-medium mb-2">Portfolio Balance</p>
+            <div className="flex items-center space-x-4">
+              <h2 className="text-5xl font-bold text-white">
                 {balanceVisible ? `${formattedBalance} ${selectedStablecoin}` : '••••••'}
               </h2>
               <button
                 onClick={() => setBalanceVisible(!balanceVisible)}
-                className={`p-1.5 rounded-full transition-colors duration-200 ${
-                  isDark ? 'hover:bg-gray-800 text-gray-400' : 'hover:bg-gray-100 text-gray-600'
-                }`}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all duration-200"
               >
-                {balanceVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {balanceVisible ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
-            {/* Wallet address display - only show when connected */}
-            {isConnected && walletAddress && (
-              <div className="flex items-center space-x-2 mt-2">
-                <span className={`text-xs font-mono ${
-                  isDark ? 'text-gray-500' : 'text-gray-500'
-                }`}>{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</span>
-              </div>
-            )}
-            
-
-
-          </div>
-          
-          {/* Stablecoin Selector */}
-          <div className="flex items-center space-x-2">
+          {/* Wallet address display - only show when connected */}
+          {isConnected && walletAddress && (
+            <div className="flex items-center space-x-2 mt-3">
+              <span className="text-xs font-mono text-white/50">
+                {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+              </span>
+            </div>
+          )}
+        </div>
+        
+        {/* Stablecoin Selector - Enhanced */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
             <select
               value={selectedStablecoin}
               onChange={(e) => setSelectedStablecoin(e.target.value)}
-              className={`px-3 py-2 rounded-xl font-medium transition-all duration-200 border ${
-                isDark 
-                  ? 'bg-gray-800/60 border-gray-700/40 text-white hover:bg-gray-700/60' 
-                  : 'bg-gray-50/80 border-gray-200/50 text-gray-900 hover:bg-gray-100/80'
-              }`}
+              className="px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-medium backdrop-blur-sm hover:bg-white/20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/30"
             >
-              <option value="USDC">USDC</option>
-              <option value="USDT">USDT</option>
-              <option value="DAI">DAI</option>
+              {stablecoins.map((coin) => (
+                <option key={coin.baseToken} value={coin.baseToken} className="bg-gray-800 text-white">
+                  {coin.baseToken}
+                </option>
+              ))}
             </select>
+            <button
+              onClick={() => {
+                setIsRefreshing(true);
+                refetch();
+                setTimeout(() => setIsRefreshing(false), 1000);
+              }}
+              disabled={isRefreshing || !isConnected}
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm"
+            >
+              <TrendingUp className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+            </button>
           </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-3 gap-3 mt-6">
-          <button
-            onClick={() => setShowGetPaidWizard(true)}
-            className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 ${
-              isDark
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                : 'bg-blue-600 hover:bg-blue-700 text-white'
-            }`}
-          >
-            <Plus className="w-5 h-5 mb-2" />
-            <span className="text-sm font-medium">Get Paid</span>
-          </button>
-
-          <button
-            onClick={handleGenerateQR}
-            className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 ${
-              isDark
-                ? 'bg-gray-700 hover:bg-gray-800 text-white'
-                : 'bg-gray-600 hover:bg-gray-700 text-white'
-            }`}
-          >
-            <QrCode className="w-5 h-5 mb-2" />
-            <span className="text-sm font-medium">Generate QR</span>
-          </button>
-
-          <button
-            onClick={() => setShowOfframpWizard(true)}
-            className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-200 ${
-              isDark
-                ? 'bg-green-600 hover:bg-green-700 text-white'
-                : 'bg-green-500 hover:bg-green-600 text-white'
-            }`}
-          >
-            <ArrowDownToLine className="w-5 h-5 mb-2" />
-            <span className="text-sm font-medium">Off-ramp</span>
-          </button>
         </div>
       </div>
 
-      {/* Business Growth CTA */}
-      <div className="p-6">
+      {/* Quick Actions - Enhanced */}
+      <div className="grid grid-cols-3 gap-4">
+        <button
+          onClick={() => setShowGetPaidWizard(true)}
+          className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-6 transition-all duration-300 flex flex-col items-center space-y-3 hover:bg-white/10 hover:scale-105 shadow-xl"
+        >
+          <div className="p-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl">
+            <Plus className="w-8 h-8 text-white" />
+          </div>
+          <span className="text-white font-semibold text-sm">Get Paid</span>
+        </button>
+        
+        <button
+          onClick={() => setShowOfframpWizard(true)}
+          className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-6 transition-all duration-300 flex flex-col items-center space-y-3 hover:bg-white/10 hover:scale-105 shadow-xl"
+        >
+          <div className="p-4 bg-gradient-to-r from-teal-500 to-green-500 rounded-2xl">
+            <ArrowDownToLine className="w-8 h-8 text-white" />
+          </div>
+          <span className="text-white font-semibold text-sm">Off-ramp</span>
+        </button>
+        
+        <button
+          onClick={handleGenerateQR}
+          className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-6 transition-all duration-300 flex flex-col items-center space-y-3 hover:bg-white/10 hover:scale-105 shadow-xl"
+        >
+          <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl">
+            <QrCode className="w-8 h-8 text-white" />
+          </div>
+          <span className="text-white font-semibold text-sm">QR Code</span>
+        </button>
+      </div>
+
+      {/* Business Growth Section - Enhanced */}
+      <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 shadow-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-              isDark ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gradient-to-r from-purple-500 to-blue-500'
-            }`}>
-              <Sparkles className="w-6 h-6 text-white" />
+            <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl">
+              <Sparkles className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h3 className={`text-lg font-display font-bold ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>Grow your business</h3>
-              <p className={`text-sm font-sans ${
-                isDark ? 'text-gray-300' : 'text-gray-600'
-              }`}>Offer the best deals</p>
+              <h3 className="text-xl font-bold text-white mb-1">Grow Your Business</h3>
+              <p className="text-white/70">Offer the best deals</p>
             </div>
           </div>
-          <button className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
-            isDark
-              ? 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-              : 'bg-white/80 hover:bg-white text-gray-900 border border-gray-200/50'
-          }`}>
+          <button
+            onClick={() => setShowPromoWizard(true)}
+            className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+          >
             Get Started
           </button>
         </div>
       </div>
 
-      {/* Active Offers */}
-      <div className="p-6">
+      {/* Active Offers Section - Enhanced */}
+      <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 shadow-xl">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              isDark ? 'bg-orange-600' : 'bg-orange-500'
-            }`}>
-              <Gift className="w-5 h-5 text-white" />
+            <div className="p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
+              <Gift className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className={`text-lg font-display font-semibold ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>Active Offers</h3>
-              <p className={`text-sm font-sans ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>Your best performing deals</p>
+              <h3 className="text-xl font-bold text-white">Active Offers</h3>
+              <p className="text-white/70 text-sm">Your top-performing deals</p>
             </div>
           </div>
-          <button className={`text-sm font-medium transition-colors duration-200 ${
-            isDark 
-              ? 'text-blue-400 hover:text-blue-300' 
-              : 'text-blue-600 hover:text-blue-700'
-          }`}>
+          <button className="text-white/70 hover:text-white font-medium transition-colors duration-200">
             View All →
           </button>
         </div>
@@ -259,19 +237,15 @@ export default function MPulseDashboard() {
         {/* Offer Cards */}
         <div className="space-y-4">
           {getActiveOffers().length === 0 ? (
-            <div className="rounded-2xl p-8 text-center">
-              <Gift className={`w-12 h-12 mx-auto mb-4 ${
-                isDark ? 'text-gray-500' : 'text-gray-400'
-              }`} />
-              <h3 className={`text-lg font-display font-semibold mb-2 ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>No Active Offers</h3>
-              <p className={`text-sm mb-4 ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>Create your first promotional offer to attract customers</p>
+            <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+              <div className="p-4 bg-gradient-to-r from-gray-600 to-gray-700 rounded-2xl w-fit mx-auto mb-4">
+                <Gift className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">No Active Offers</h3>
+              <p className="text-white/70 text-sm mb-6">Create your first one to attract customers</p>
               <button
                 onClick={() => setShowPromoWizard(true)}
-                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-xl transition-all duration-200 shadow-lg"
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 Create Your First Offer
               </button>
@@ -292,37 +266,39 @@ export default function MPulseDashboard() {
               return (
                 <div
                   key={offer.id}
-                  className={`${getOfferGradient(offer.colorTheme)} rounded-2xl p-4 text-white relative overflow-hidden`}
+                  className={`${getOfferGradient(offer.colorTheme)} rounded-3xl p-6 text-white relative overflow-hidden shadow-xl`}
                 >
                   <div className="flex items-center justify-between relative z-10">
                     <div className="flex-1">
                       <p className="text-sm opacity-90 mb-1">Up to</p>
-                      <h4 className="text-2xl font-display font-bold mb-1">{offer.discount}% OFF</h4>
-                      <p className="text-sm opacity-90">{offer.description}</p>
+                      <h4 className="text-3xl font-bold mb-2">{offer.discount}% OFF</h4>
+                      <p className="text-sm opacity-90 mb-4">{offer.description}</p>
                       
                       <button
                         onClick={() => handleShare(offer)}
-                        className="flex items-center space-x-2 mt-3 px-3 py-1.5 bg-white/20 rounded-lg hover:bg-white/30 transition-colors duration-200"
+                        className="flex items-center space-x-2 px-4 py-2 bg-white/20 rounded-xl hover:bg-white/30 transition-all duration-200 backdrop-blur-sm"
                       >
-                        <Share2 className="w-3 h-3" />
-                        <span className="text-sm font-medium">Share</span>
+                        <Share2 className="w-4 h-4" />
+                        <span className="text-sm font-semibold">Share</span>
                       </button>
                     </div>
                     
-                    <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center">
-                      <Percent className="w-8 h-8 text-white/80" />
+                    <div className="w-20 h-20 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                      <Percent className="w-10 h-10 text-white/90" />
                     </div>
                   </div>
               
-                  {/* Decorative elements */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-                  <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 translate-x-12"></div>
+                  {/* Enhanced Decorative elements */}
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-20 translate-x-20"></div>
+                  <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-full translate-y-16 translate-x-16"></div>
+                  <div className="absolute top-1/2 left-0 w-24 h-24 bg-white/5 rounded-full -translate-x-12"></div>
                 </div>
               );
             })
           )}
         </div>
       </div>
+    </div>
 
       {/* Promo Setup Wizard Modal */}
       {showPromoWizard && (
