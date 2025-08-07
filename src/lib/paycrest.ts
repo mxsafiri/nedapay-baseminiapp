@@ -113,7 +113,7 @@ class PaycrestService {
   ): Promise<PaycrestRate> {
     try {
       const response = await fetch(
-        `/api/paycrest/rates?token=${token}&amount=${amount}&currency=${currency}`
+        `/api/paycrest/rates?token=${token}&amount=${amount}&currency=${currency}&network=base`
       );
       
       if (!response.ok) {

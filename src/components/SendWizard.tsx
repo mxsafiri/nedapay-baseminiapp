@@ -76,10 +76,10 @@ export function SendWizard() {
 
   const fetchExchangeRate = async () => {
     try {
-      const response = await fetch(`/api/paycrest/rates?token=${data.token}&amount=${data.amount}&currency=${data.currency}`);
+      const response = await fetch(`/api/paycrest/rates?token=${data.token}&amount=${data.amount}&currency=${data.currency}&network=base`);
       if (response.ok) {
         const rateData = await response.json();
-        setExchangeRate(rateData.rate || 0);
+        setExchangeRate(parseFloat(rateData.data) || 0); // Fix: use data.data instead of data.rate
         setEstimatedFee(rateData.fee || 0);
       }
     } catch (error) {

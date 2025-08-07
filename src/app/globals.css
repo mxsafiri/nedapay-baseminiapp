@@ -2,21 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* NEDApay Custom Fonts */
-@font-face {
-  font-family: 'Coinbase Display';
-  src: url('/Coinbase Display-normal-400-100.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+/* NEDApay Custom Fonts - Using Google Fonts alternatives */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap');
 
-@font-face {
-  font-family: 'Coinbase Sans';
-  src: url('/coinbaseSans-normal-400-100.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+/* Font variables for consistency */
+:root {
+  --font-display: 'Manrope', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-nedapay: 'Manrope', system-ui, sans-serif;
 }
 
 /* Hide scrollbar for horizontal scrolling */

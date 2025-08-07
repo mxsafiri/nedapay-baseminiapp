@@ -14,19 +14,27 @@ export async function GET(request: NextRequest) {
   try {
     const paycrestUrl = `${process.env.NEXT_PUBLIC_PAYCREST_API_URL}/v1/institutions/${currency}`;
     
+    console.log('Fetching Paycrest institutions:', { currency, url: paycrestUrl });
+    
     const response = await fetch(paycrestUrl, {
       method: 'GET',
       headers: {
-        'API-Key': process.env.NEXT_PUBLIC_PAYCREST_CLIENT_ID || '',
+        'Authorization': `Bearer ${process.env.PAYCREST_CLIENT_SECRET}`, // Use proper auth header
+        'x-api-key': process.env.NEXT_PUBLIC_PAYCREST_CLIENT_ID || '',
         'Content-Type': 'application/json',
       },
     });
 
+    console.log('Paycrest institutions response status:', response.status);
+    
     if (!response.ok) {
-      throw new Error(`Paycrest API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('Paycrest institutions API error details:', errorText);
+      throw new Error(`Paycrest API error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const data = await response.json();
+    console.log('Paycrest institutions data:', data);
     return NextResponse.json(data);
   } catch (error) {
     console.error('Institutions fetch error:', error);

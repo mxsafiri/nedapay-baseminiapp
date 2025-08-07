@@ -457,11 +457,13 @@ export function EnhancedOfframpWizard({ isOpen, onClose }: EnhancedOfframpWizard
                     } focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
                   >
                     <option value="">Select a bank...</option>
-                    {institutions.map((inst) => (
+                    {Array.isArray(institutions) ? institutions.map((inst) => (
                       <option key={inst.code} value={inst.code}>
                         {inst.name}
                       </option>
-                    ))}
+                    )) : (
+                      <option disabled>Loading banks...</option>
+                    )}
                   </select>
                 </div>
               )}
@@ -591,20 +593,21 @@ export function EnhancedOfframpWizard({ isOpen, onClose }: EnhancedOfframpWizard
                           <span className={isDark ? 'text-white' : 'text-gray-900'}>{receiveAmount} {fiat}</span>
                         </div>
                       )}
+                      {currentStep === 'review' && rate && (
+                        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-green-700 dark:text-green-300">Exchange Rate:</span>
+                            <span className="font-semibold text-green-800 dark:text-green-200">
+                              1 USDC = {rate} {fiat}
+                            </span>
+                          </div>
+                          <div className="text-xs text-green-600 dark:text-green-400 mt-1">
+                            You will receive approximately {(parseFloat(amount) * parseFloat(rate)).toFixed(2)} {fiat}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-
-                  {!rate && (
-                    <Button
-                      type="button"
-                      onClick={handleFetchRate}
-                      disabled={isLoading}
-                      className="w-full"
-                    >
-                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                      Get Exchange Rate
-                    </Button>
-                  )}
                 </div>
               )}
 

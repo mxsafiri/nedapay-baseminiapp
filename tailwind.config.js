@@ -18,9 +18,9 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        'display': ['Coinbase Display', 'system-ui', 'sans-serif'],
-        'sans': ['Coinbase Sans', 'system-ui', 'sans-serif'],
-        'nedapay': ['Coinbase Display', 'system-ui', 'sans-serif'],
+        'display': ['Manrope', 'system-ui', 'sans-serif'],
+        'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'nedapay': ['Manrope', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

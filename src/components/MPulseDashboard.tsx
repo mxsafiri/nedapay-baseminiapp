@@ -140,14 +140,7 @@ export default function MPulseDashboard() {
             )}
             
 
-            {/* USD value display - only show when connected and has balance */}
-            {isConnected && balanceValue > 0 && (
-              <div className="flex items-center space-x-2 mt-2">
-                <span className={`text-sm font-medium ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`}>≈ ${formatCurrency(balanceValue)} USD</span>
-              </div>
-            )}
+
           </div>
           
           {/* Stablecoin Selector */}

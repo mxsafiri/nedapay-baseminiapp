@@ -103,12 +103,31 @@ export function GetPaidWizard({ isOpen, onClose }: GetPaidWizardProps) {
     }
   };
 
-  const generatePaymentLink = () => {
-    // Generate a unique payment link ID
-    const linkId = Math.random().toString(36).substring(2, 15);
-    const baseUrl = window.location.origin;
-    const link = `${baseUrl}/pay/${linkId}`;
-    setGeneratedLink(link);
+  const generatePaymentLink = async () => {
+    try {
+      // Create payment request via API
+      const response = await fetch('/api/payment-requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create payment request');
+      }
+      
+      const result = await response.json();
+      const baseUrl = window.location.origin;
+      const link = `${baseUrl}/pay/${result.paymentId}`;
+      setGeneratedLink(link);
+      
+      console.log('Payment request created:', result);
+    } catch (error) {
+      console.error('Error creating payment link:', error);
+      toast.error('Failed to create payment link');
+    }
   };
 
   const handleAuthSuccess = () => {
@@ -266,12 +285,12 @@ export function GetPaidWizard({ isOpen, onClose }: GetPaidWizardProps) {
                   <h3 className={`text-lg font-semibold mb-2 ${
                     isDark ? 'text-white' : 'text-gray-900'
                   }`}>
-                    How do you want to get paid?
+                    Payment Method
                   </h3>
                   <p className={`text-sm ${
                     isDark ? 'text-gray-400' : 'text-gray-600'
                   }`}>
-                    Choose your preferred payment method
+                    Choose how customers can pay you
                   </p>
                 </div>
                 
@@ -279,21 +298,21 @@ export function GetPaidWizard({ isOpen, onClose }: GetPaidWizardProps) {
                   {[
                     { 
                       id: 'crypto', 
-                      title: 'Crypto Only', 
-                      description: 'Accept USDC, USDT, ETH payments',
-                      icon: '₿'
+                      title: 'Crypto', 
+                      description: 'USDC, USDT, ETH',
+                      icon: 'crypto'
                     },
                     { 
                       id: 'fiat', 
-                      title: 'Fiat Only', 
-                      description: 'Accept bank transfers, mobile money',
-                      icon: '💳'
+                      title: 'Fiat', 
+                      description: 'Bank transfers, M-Pesa',
+                      icon: 'fiat'
                     },
                     { 
                       id: 'both', 
-                      title: 'Both Crypto & Fiat', 
-                      description: 'Maximum flexibility for your customers',
-                      icon: '🌍'
+                      title: 'Both', 
+                      description: 'Maximum flexibility',
+                      icon: 'both'
                     },
                   ].map((method) => (
                     <button
@@ -308,7 +327,29 @@ export function GetPaidWizard({ isOpen, onClose }: GetPaidWizardProps) {
                       }`}
                     >
                       <div className="flex items-start space-x-3">
-                        <div className="text-2xl">{method.icon}</div>
+                        <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
+                          {method.icon === 'crypto' && (
+                            <img 
+                              src="/other icons /Circle_USDC_Logo.svg.png" 
+                              alt="Crypto" 
+                              className="w-5 h-5 object-contain"
+                            />
+                          )}
+                          {method.icon === 'fiat' && (
+                            <img 
+                              src="/other icons /fast-settlements.png" 
+                              alt="Fiat" 
+                              className="w-5 h-5 object-contain"
+                            />
+                          )}
+                          {method.icon === 'both' && (
+                            <img 
+                              src="/other icons /global_stablecoins.png" 
+                              alt="Both" 
+                              className="w-5 h-5 object-contain"
+                            />
+                          )}
+                        </div>
                         <div>
                           <div className={`font-medium ${
                             isDark ? 'text-white' : 'text-gray-900'

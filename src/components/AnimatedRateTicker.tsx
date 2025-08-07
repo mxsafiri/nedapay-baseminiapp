@@ -41,12 +41,12 @@ export function AnimatedRateTicker() {
     const fetchRates = async () => {
       const ratePromises = currencies.map(async (currency) => {
         try {
-          const response = await fetch(`/api/paycrest/rates?token=USDC&amount=1&currency=${currency.code}`);
+          const response = await fetch(`/api/paycrest/rates?token=USDC&amount=1&currency=${currency.code}&network=base`);
           if (response.ok) {
             const data = await response.json();
             return {
               currency: currency.code,
-              rate: data.rate || 0,
+              rate: parseFloat(data.data) || 0, // Fix: use data.data instead of data.rate
               flag: currency.flag,
               name: currency.name,
             };
@@ -144,12 +144,12 @@ export function CompactRateTicker() {
     const fetchRates = async () => {
       const ratePromises = topCurrencies.map(async (currency) => {
         try {
-          const response = await fetch(`/api/paycrest/rates?token=USDC&amount=1&currency=${currency.code}`);
+          const response = await fetch(`/api/paycrest/rates?token=USDC&amount=1&currency=${currency.code}&network=base`);
           if (response.ok) {
             const data = await response.json();
             return {
               currency: currency.code,
-              rate: data.rate || 0,
+              rate: parseFloat(data.data) || 0, // Fix: use data.data instead of data.rate
               flag: currency.flag,
               name: '',
             };
