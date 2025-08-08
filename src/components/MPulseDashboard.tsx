@@ -150,7 +150,7 @@ export default function MPulseDashboard() {
         <div className="grid grid-cols-3 gap-4">
           <button
             onClick={() => setShowGetPaidWizard(true)}
-            className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-3xl p-5 transition-all duration-300 flex flex-col items-center space-y-3 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-2xl p-5 transition-all duration-300 flex flex-col items-center space-y-3 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <Plus className="w-7 h-7 text-white" />
             <span className="text-white font-semibold text-sm tracking-wide">Get Paid</span>
@@ -158,7 +158,7 @@ export default function MPulseDashboard() {
           
           <button
             onClick={handleGenerateQR}
-            className="bg-white/8 hover:bg-white/15 active:bg-white/20 backdrop-blur-sm border border-white/20 rounded-3xl p-5 transition-all duration-300 flex flex-col items-center space-y-3 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="bg-white/8 hover:bg-white/15 active:bg-white/20 backdrop-blur-sm border border-white/20 rounded-2xl p-5 transition-all duration-300 flex flex-col items-center space-y-3 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
@@ -169,10 +169,10 @@ export default function MPulseDashboard() {
           
           <button
             onClick={() => setShowOfframpWizard(true)}
-            className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 rounded-3xl p-5 transition-all duration-300 flex flex-col items-center space-y-3 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 rounded-2xl p-5 transition-all duration-300 flex flex-col items-center space-y-3 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <ArrowDownToLine className="w-7 h-7 text-white" />
-            <span className="text-white font-semibold text-sm tracking-wide">Off-ramp</span>
+            <span className="text-white font-semibold text-sm tracking-wide whitespace-nowrap">Off-ramp</span>
           </button>
         </div>
       </div>
