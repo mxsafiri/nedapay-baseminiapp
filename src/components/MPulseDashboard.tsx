@@ -160,11 +160,10 @@ export default function MPulseDashboard() {
             onClick={handleGenerateQR}
             className="bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl p-4 transition-all duration-200 flex flex-col items-center space-y-2"
           >
-            <div className="w-6 h-6 flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z" stroke="currentColor" strokeWidth="1" fill="none"/>
-              </svg>
-            </div>
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
             <span className="text-white font-medium text-sm">Generate QR</span>
           </button>
           
@@ -192,7 +191,7 @@ export default function MPulseDashboard() {
           </div>
           <button
             onClick={() => setShowPromoWizard(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-all duration-200"
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full transition-all duration-200"
           >
             Get Started
           </button>
