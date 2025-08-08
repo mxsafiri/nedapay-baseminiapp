@@ -191,7 +191,7 @@ export default function MPulseDashboard() {
           </div>
           <button
             onClick={() => setShowPromoWizard(true)}
-            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl transition-all duration-200"
+            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl transition-all duration-200 whitespace-nowrap"
           >
             Get Started
           </button>
