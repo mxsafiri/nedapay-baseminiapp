@@ -164,21 +164,19 @@ export function GetPaidWizard({ isOpen, onClose }: GetPaidWizardProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md">
+    <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 ${
+      isOpen ? 'block' : 'hidden'
+    }`}>
+      <div className="w-full max-w-md mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl">
         <div className="p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className={`text-xl font-bold ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
+            <h2 className="text-xl font-bold text-white tracking-tight">
               Get Paid
             </h2>
             <button
               onClick={onClose}
-              className={`p-2 rounded-lg transition-colors ${
-                isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
-              }`}
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all duration-200"
             >
               ✕
             </button>
@@ -601,7 +599,7 @@ export function GetPaidWizard({ isOpen, onClose }: GetPaidWizardProps) {
             </div>
           )}
         </div>
-      </Card>
+      </div>
 
       {/* Auth Prompt */}
       {showAuthPrompt && (

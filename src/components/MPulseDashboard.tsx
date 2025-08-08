@@ -28,8 +28,8 @@ import SharePreviewModal from './SharePreviewModal';
 import QRPreviewModal from './QRPreviewModal';
 import { useOffers } from '@/contexts/OffersContext';
 import { RateDisplay } from '@/components/RateDisplay';
-import { EnhancedOfframpWizard } from './EnhancedOfframpWizard';
-import { GetPaidWizard } from './GetPaidWizard';
+import { ModernOfframpWizard } from './ModernOfframpWizard';
+import { ModernGetPaidWizard } from './ModernGetPaidWizard';
 
 export default function MPulseDashboard() {
   const { isDark } = useTheme();
@@ -252,16 +252,18 @@ export default function MPulseDashboard() {
       )}
       
       {/* Offramp Wizard Modal */}
+      {/* Modern Offramp Wizard */}
       {showOfframpWizard && (
-        <EnhancedOfframpWizard
+        <ModernOfframpWizard
           isOpen={showOfframpWizard}
           onClose={() => setShowOfframpWizard(false)}
         />
       )}
       
       {/* Get Paid Wizard Modal */}
+      {/* Modern Get Paid Wizard */}
       {showGetPaidWizard && (
-        <GetPaidWizard
+        <ModernGetPaidWizard
           isOpen={showGetPaidWizard}
           onClose={() => setShowGetPaidWizard(false)}
         />
