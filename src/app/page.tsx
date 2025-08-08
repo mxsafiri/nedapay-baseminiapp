@@ -99,7 +99,7 @@ export default function Home() {
   return (
     <main className={`min-h-screen ${
       isDark 
-        ? 'bg-gray-950 text-white' 
+        ? 'bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 text-white' 
         : 'bg-white text-gray-900'
     }`}>
         {/* Header */}
