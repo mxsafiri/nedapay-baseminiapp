@@ -111,7 +111,23 @@ export default function MPulseDashboard() {
       {/* Portfolio Balance Section - Target Design Match */}
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl">
         <div className="mb-6">
-          <p className="text-white/60 text-sm mb-4 font-medium">Portfolio Balance</p>
+          {/* Header with Portfolio Balance and Asset Selector */}
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-white/60 text-sm font-medium">Portfolio Balance</p>
+            <select
+              value={selectedStablecoin}
+              onChange={(e) => setSelectedStablecoin(e.target.value)}
+              className="px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm backdrop-blur-sm hover:bg-white/20 transition-all duration-200 focus:outline-none"
+            >
+              {stablecoins.map((coin) => (
+                <option key={coin.baseToken} value={coin.baseToken} className="bg-gray-800 text-white">
+                  {coin.baseToken}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          {/* Balance and Eye Toggle */}
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-3xl font-bold text-white mb-3 whitespace-nowrap tracking-tight">
@@ -124,25 +140,12 @@ export default function MPulseDashboard() {
                 </p>
               )}
             </div>
-            <div className="flex items-center space-x-2">
-              <select
-                value={selectedStablecoin}
-                onChange={(e) => setSelectedStablecoin(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm backdrop-blur-sm hover:bg-white/20 transition-all duration-200 focus:outline-none"
-              >
-                {stablecoins.map((coin) => (
-                  <option key={coin.baseToken} value={coin.baseToken} className="bg-gray-800 text-white">
-                    {coin.baseToken}
-                  </option>
-                ))}
-              </select>
-              <button
-                onClick={() => setBalanceVisible(!balanceVisible)}
-                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all duration-200"
-              >
-                {balanceVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
+            <button
+              onClick={() => setBalanceVisible(!balanceVisible)}
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all duration-200"
+            >
+              {balanceVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
           </div>
         </div>
 
