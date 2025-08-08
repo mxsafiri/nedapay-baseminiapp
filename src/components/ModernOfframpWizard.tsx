@@ -244,8 +244,8 @@ export function ModernOfframpWizard({ isOpen, onClose }: ModernOfframpWizardProp
                     >
                       <option value="" className="bg-gray-800">Select currency</option>
                       {currencies.map((currency) => (
-                        <option key={currency} value={currency} className="bg-gray-800">
-                          {currency}
+                        <option key={currency.code} value={currency.code} className="bg-gray-800">
+                          {currency.code}
                         </option>
                       ))}
                     </select>
@@ -280,10 +280,10 @@ export function ModernOfframpWizard({ isOpen, onClose }: ModernOfframpWizardProp
                   {institutions.length > 0 ? (
                     institutions.map((bank) => (
                       <button
-                        key={bank.id}
-                        onClick={() => setInstitution(bank)}
+                        key={bank.code}
+                        onClick={() => setInstitution(bank.name)}
                         className={`w-full p-4 rounded-xl border transition-all duration-200 text-left ${
-                          institution?.id === bank.id
+                          institution === bank.name
                             ? 'bg-teal-600/20 border-teal-500/50 text-white'
                             : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
                         }`}
@@ -312,7 +312,7 @@ export function ModernOfframpWizard({ isOpen, onClose }: ModernOfframpWizardProp
               <div className="space-y-6">
                 <div className="text-center">
                   <h3 className="text-lg font-semibold text-white mb-2">Account details</h3>
-                  <p className="text-white/60 text-sm">Enter your {institution?.name} account information</p>
+                  <p className="text-white/60 text-sm">Enter your {institution} account information</p>
                 </div>
                 
                 <div className="space-y-4">
@@ -352,7 +352,7 @@ export function ModernOfframpWizard({ isOpen, onClose }: ModernOfframpWizardProp
                       </div>
                       <div className="flex justify-between">
                         <span className="text-white/60">Bank:</span>
-                        <span className="text-white">{institution?.name}</span>
+                        <span className="text-white">{institution}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-white/60">Gas Method:</span>
