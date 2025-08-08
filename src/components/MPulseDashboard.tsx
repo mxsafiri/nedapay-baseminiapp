@@ -114,7 +114,7 @@ export default function MPulseDashboard() {
           <p className="text-white/70 text-sm mb-3">Portfolio Balance</p>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-4xl font-bold text-white mb-2 whitespace-nowrap">
+              <h2 className="text-2xl font-bold text-white mb-2 whitespace-nowrap">
                 {balanceVisible ? `${formattedBalance} ${selectedStablecoin}` : '••••••'}
               </h2>
               {/* Wallet address display - compact */}
