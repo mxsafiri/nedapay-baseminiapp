@@ -114,7 +114,7 @@ export default function MPulseDashboard() {
           <p className="text-white/70 text-sm mb-3">Portfolio Balance</p>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-4xl font-bold text-white mb-2">
+              <h2 className="text-4xl font-bold text-white mb-2 whitespace-nowrap">
                 {balanceVisible ? `${formattedBalance} ${selectedStablecoin}` : '••••••'}
               </h2>
               {/* Wallet address display - compact */}
@@ -191,7 +191,7 @@ export default function MPulseDashboard() {
           </div>
           <button
             onClick={() => setShowPromoWizard(true)}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full transition-all duration-200"
+            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl transition-all duration-200"
           >
             Get Started
           </button>
