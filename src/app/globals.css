@@ -114,7 +114,11 @@
   * {
     @apply border-border;
   }
-  body {
+  /* body {
     @apply bg-background text-foreground;
+  } */
+  /* Background is now handled in layout.tsx for consistent gradient */
+  body {
+    @apply text-foreground;
   }
 }
