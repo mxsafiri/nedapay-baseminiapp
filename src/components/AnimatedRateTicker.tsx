@@ -14,15 +14,9 @@ export function AnimatedRateTicker() {
   const { isDark } = useTheme();
   const [currentRates, setCurrentRates] = useState<RateItem[]>([]);
 
-  // Fallback rates in case API fails
-  const fallbackRates: RateItem[] = [
-    { currency: 'NGN', rate: 1650.50, flag: '🇳🇬', name: 'Nigerian Naira' },
-    { currency: 'KES', rate: 128.30, flag: '🇰🇪', name: 'Kenyan Shilling' },
-    { currency: 'TZS', rate: 2520.36, flag: '🇹🇿', name: 'Tanzanian Shilling' },
-    { currency: 'UGX', rate: 3750.25, flag: '🇺🇬', name: 'Ugandan Shilling' },
-    { currency: 'GHS', rate: 15.80, flag: '🇬🇭', name: 'Ghanaian Cedi' },
-    { currency: 'ZAR', rate: 18.45, flag: '🇿🇦', name: 'South African Rand' },
-  ];
+  // Loading and error states for production
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   // Define the currencies we want to show in the ticker
   const currencies = [
@@ -39,6 +33,9 @@ export function AnimatedRateTicker() {
   // Fetch rates for each currency
   useEffect(() => {
     const fetchRates = async () => {
+      setIsLoading(true);
+      setHasError(false);
+      
       const ratePromises = currencies.map(async (currency) => {
         try {
           const response = await fetch(`/api/paycrest/rates?token=USDC&amount=1&currency=${currency.code}&network=base`);
@@ -46,7 +43,7 @@ export function AnimatedRateTicker() {
             const data = await response.json();
             return {
               currency: currency.code,
-              rate: parseFloat(data.data) || 0, // Fix: use data.data instead of data.rate
+              rate: parseFloat(data.data) || 0,
               flag: currency.flag,
               name: currency.name,
             };
@@ -54,16 +51,20 @@ export function AnimatedRateTicker() {
         } catch (error) {
           console.error(`Error fetching rate for ${currency.code}:`, error);
         }
-        return {
-          currency: currency.code,
-          rate: 0,
-          flag: currency.flag,
-          name: currency.name,
-        };
+        return null; // Return null for failed requests
       });
 
       const rates = await Promise.all(ratePromises);
-      setCurrentRates(rates.filter(rate => rate.rate > 0));
+      const validRates = rates.filter((rate): rate is RateItem => rate !== null && rate.rate > 0);
+      
+      if (validRates.length > 0) {
+        setCurrentRates(validRates);
+        setHasError(false);
+      } else {
+        setHasError(true);
+      }
+      
+      setIsLoading(false);
     };
 
     fetchRates();
@@ -73,8 +74,8 @@ export function AnimatedRateTicker() {
     return () => clearInterval(interval);
   }, []);
 
-  // Use live rates if available, otherwise use fallback rates
-  const displayRates = currentRates.length > 0 ? currentRates : fallbackRates;
+  // Only show rates if we have real data
+  const displayRates = currentRates;
 
   // Duplicate the rates array to create seamless infinite scroll
   const duplicatedRates = [...displayRates, ...displayRates];

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useBalance } from '@/hooks/useBalance';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -32,8 +33,13 @@ export function FiatOfframp() {
   const address = user?.walletAddress;
   const isConnected = isAuthenticated && address;
 
-  // Placeholder balance - in production you'd fetch real balance
-  const balance = isConnected ? { value: BigInt('1650500000'), decimals: 6, formatted: '1,650.50' } : null;
+  // Use real balance from useBalance hook
+  const { usdc, isLoading: balanceLoading } = useBalance(address);
+  const balance = isConnected && usdc ? { 
+    value: BigInt(Math.floor(parseFloat(usdc) * 1000000)), 
+    decimals: 6, 
+    formatted: usdc 
+  } : null;
 
   const availableBalance = balance 
     ? parseFloat(formatBalance(balance.value.toString(), selectedCoin.decimals))

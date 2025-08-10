@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { 
   Gift, 
@@ -32,12 +32,34 @@ interface QuickInsight {
 
 export function LoyaltyDashboard() {
   const { isDark } = useTheme();
-  const [metrics] = useState<LoyaltyMetrics>({
-    totalCustomers: 125,
-    loyaltyDrivenSales: 500,
-    redemptionRate: 80,
-    activeRewards: 8
+  const [metrics, setMetrics] = useState<LoyaltyMetrics>({
+    totalCustomers: 0,
+    loyaltyDrivenSales: 0,
+    redemptionRate: 0,
+    activeRewards: 0
   });
+
+  // Fetch real loyalty metrics from Supabase
+  useEffect(() => {
+    const fetchLoyaltyMetrics = async () => {
+      try {
+        const response = await fetch('/api/analytics/loyalty');
+        if (response.ok) {
+          const data = await response.json();
+          setMetrics(data.metrics || {
+            totalCustomers: 0,
+            loyaltyDrivenSales: 0,
+            redemptionRate: 0,
+            activeRewards: 0
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch loyalty metrics:', error);
+      }
+    };
+
+    fetchLoyaltyMetrics();
+  }, []);
 
   const [insights] = useState<QuickInsight[]>([
     {
